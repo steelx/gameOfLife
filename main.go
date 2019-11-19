@@ -2,58 +2,40 @@ package main
 
 import (
 	"fmt"
-	tm "github.com/buger/goterm"
-	"strings"
+	"os"
+	"os/exec"
+	"runtime"
 	"time"
 )
 
 func main() {
-	//Cell
-	var initial_grid = [][]int{
-		{0, 0, 1, 1, 0, 0, 0, 0, 1, 0},
-		{0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
-		{0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
-		{0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 1, 1, 0, 1, 0, 0, 0, 0, 0},
-		{0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-		{0, 0, 1, 0, 1, 0, 0, 0, 0, 0},
-		{1, 0, 0, 1, 1, 0, 0, 0, 0, 0},
-		{0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-	}
 
 	//create world
-	var world = make(World, 10)
-	for y, row := range initial_grid {
-		world[y] = make([]Cell, len(row))
-		for x, space := range row {
-			var alive bool
-			if space == 1 {
-				alive = true
-			}
-			var cell = Cell{Pos: Vector{x, y}, Alive: alive}
-			world[y][x] = cell
-		}
-	}
+	var world = NewWorld(10, 10)
+	world.generateMap()
 
-	for i := 0; i < 100; i++ {
-		tm.Clear()
-		box := tm.NewBox(40|tm.PCT, 10, 0)
-		var printThis []string
-		//update world
-		for y, row := range world {
-			for x, cell := range row {
-				var neighbours = findNeighbours(world, cell)
-				cell.NextState(neighbours)
-				world[y][x] = cell
-			}
-			printThis = append(printThis, strings.Join(buildRow(row)[:], " "))
+	for {
+		cmd := exec.Command("clear")
+		if runtime.GOOS == "windows" {
+			cmd = exec.Command("cmd", "/c", "cls")
 		}
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+
+		//print
+		for y := 0; y < world.height; y++ {
+			//creates new row
+			fmt.Print("|")
+
+			//columns
+			for x := 0; x < world.width; x++ {
+				fmt.Print(getChar(world.getCell(x, y)))
+			}
+
+			fmt.Println("|")
+		}
+
 		time.Sleep(1 * time.Second)
-		fmt.Fprint(box, strings.Join(printThis[:], "\n"))
-		// Move Box to approx center of the screen
-		tm.Print(tm.MoveTo(box.String(), 40|tm.PCT, 40|tm.PCT))
-		tm.Flush()
 	}
 }
 
@@ -62,22 +44,4 @@ func getChar(cell Cell) string {
 		return "*"
 	}
 	return " "
-}
-
-func buildRow(row []Cell) []string {
-	var strip []string
-	for _, cell := range row {
-		strip = append(strip, getChar(cell))
-	}
-	return strip
-}
-
-func findNeighbours(world World, cell Cell) (count int) {
-	view := &View{world, cell}
-	for _, direction := range DirectionNames {
-		if view.Look(Directions[direction]) {
-			count += 1
-		}
-	}
-	return
 }

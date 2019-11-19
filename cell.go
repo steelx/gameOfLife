@@ -20,16 +20,11 @@ type Vector struct {
 }
 
 type Cell struct {
-	Pos   Vector
 	Alive bool
 }
 
-func NewCell(x, y int, alive bool) *Cell {
-	c := new(Cell)
-	c.Alive = alive
-	c.Pos.x = x
-	c.Pos.y = y
-	return c
+func NewCell(alive bool) *Cell {
+	return &Cell{alive}
 }
 
 func (c *Cell) NextState(neighbours int) {
@@ -44,8 +39,4 @@ func (c *Cell) NextState(neighbours int) {
 	if !c.Alive && neighbours == 2 {
 		c.Alive = true
 	}
-}
-
-func (c Cell) Plus(vec Vector) Vector {
-	return NewCell(c.Pos.x+vec.x, c.Pos.y+vec.y, c.Alive).Pos
 }
