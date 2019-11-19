@@ -13,6 +13,14 @@ type World struct {
 	height int
 }
 
+/*
+ x → →
+
+ y
+ ↓
+ ↓
+*/
+
 func NewWorld(width, height int) *World {
 	return &World{
 		cells:  make([]Cell, width*height),
@@ -21,8 +29,8 @@ func NewWorld(width, height int) *World {
 	}
 }
 
-func (wl World) generateMap() {
-	percentageAlive := 33 * len(wl.cells) / 100
+func (wl World) generateMap(percent int) {
+	percentageAlive := percent * len(wl.cells) / 100
 
 	// Fill Alive Cells as per percentage given
 	for i := percentageAlive; i > 0; i-- {
@@ -56,36 +64,36 @@ func (wl World) isInside(x, y int) bool {
 	return x >= 0 && x < wl.width && y >= 0 && y < wl.height
 }
 
-//Look checks a Cell at given direction
+// Look checks a Cell at given direction
 // and returns true if a Cell is found
 func (wl World) Look(x, y int, dir Vector) bool {
 	if !wl.isInside(x, y) {
-		fmt.Printf("Cordinates %v and %v are not in range!", x, y)
-		os.Exit(1)
+		return false
 	}
 	return wl.Plus(x, y, dir)
 }
-func (wl World) getCell(x, y int) Cell {
-	return wl.cells[x+(y*wl.width)]
+
+func (wl World) getCell(x, y int) bool {
+	y = y * wl.height
+	return wl.cells[x+y].Alive
 }
 
 func (wl *World) setCell(x, y int, alive bool) {
 	if !wl.isInside(x, y) {
-		fmt.Printf("Cordinates %v and %v are not in range!", x, y)
+		fmt.Printf("Cordinates %v and %v are not in range! \n", x, y)
 		os.Exit(1)
 	}
 
 	wl.cells[x+y*(wl.width)] = Cell{alive}
 }
 
-//Plus accepts x, y of Cell PLUS direction vector
+// Plus accepts x, y of Cell PLUS direction vector
 // returns if Cell exists in the given direction
 func (wl World) Plus(x, y int, vec Vector) bool {
-	isAlive := wl.getCell(x+vec.x, y+vec.y).Alive
-	return isAlive
+	return wl.getCell(x+vec.x, y+vec.y)
 }
 
-//findNeighbours of given co-ordinates
+// findNeighbours of given co-ordinates
 func (wl World) findNeighbours(x, y int) (count int) {
 	for _, direction := range DirectionNames {
 		if wl.Look(x, y, Directions[direction]) {
@@ -95,8 +103,8 @@ func (wl World) findNeighbours(x, y int) (count int) {
 	return
 }
 
-func getChar(cell Cell) string {
-	if cell.Alive {
+func getChar(isAlive bool) string {
+	if isAlive {
 		return "*"
 	}
 	return " "

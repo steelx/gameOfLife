@@ -11,7 +11,7 @@ func main() {
 
 	//create world
 	var world = NewWorld(50, 20)
-	world.generateMap()
+	world.generateMap(33)
 
 	for {
 		clearTerminal()
