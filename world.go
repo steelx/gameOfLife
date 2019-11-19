@@ -74,8 +74,7 @@ func (wl World) Look(x, y int, dir Vector) bool {
 }
 
 func (wl World) getCell(x, y int) bool {
-	y = y * wl.height
-	return wl.cells[x+y].Alive
+	return wl.cells[x+(y*wl.width)].Alive
 }
 
 func (wl *World) setCell(x, y int, alive bool) {
@@ -84,7 +83,7 @@ func (wl *World) setCell(x, y int, alive bool) {
 		os.Exit(1)
 	}
 
-	wl.cells[x+y*(wl.width)] = Cell{alive}
+	wl.cells[x+(y*wl.width)] = Cell{alive}
 }
 
 // Plus accepts x, y of Cell PLUS direction vector

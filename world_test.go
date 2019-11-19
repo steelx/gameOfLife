@@ -62,3 +62,46 @@ func TestWorld_LookNotFound(t *testing.T) {
 		t.Error(t, "No Cell should be found, since direction South West is empty.")
 	}
 }
+
+func TestWorld_Plus(t *testing.T) {
+	var wl *World = NewWorld(5, 5)
+	wl.setCell(1, 1, true)
+	wl.setCell(2, 1, true)
+	rightCell := wl.Plus(1, 1, Directions["e"])
+
+	if isAlive := wl.getCell(2, 1); isAlive != rightCell {
+		t.Error(t, "Cell should be found Alive")
+	}
+}
+
+func TestWorld_setCell(t *testing.T) {
+	var wl *World = NewWorld(20, 10)
+	wl.setCell(1, 1, true)
+
+	if cell := wl.getCell(1, 1); !cell {
+		t.Error("Cell should be Alive")
+	}
+}
+
+func TestWorld_findNeighbours(t *testing.T) {
+	var wl *World = NewWorld(5, 5)
+	wl.setCell(1, 1, true)
+	wl.setCell(1, 2, true)
+	wl.setCell(2, 1, true)
+
+	if count := wl.findNeighbours(1, 1); count != 2 {
+		t.Error("Neighbours count should be 2 for given vector")
+	}
+}
+
+func TestGetChar(t *testing.T) {
+	char := getChar(true)
+	if char != "*" {
+		t.Error("Alive cell display character should be an astrix *")
+	}
+
+	char = getChar(false)
+	if char != " " {
+		t.Error("Dead cell display character should be an empty space")
+	}
+}
