@@ -39,6 +39,19 @@ func (wl World) generateMap() {
 	wl.cells = cellsClone
 }
 
+//Print to screen
+func (wl World) print() {
+	for y := 0; y < wl.height; y++ {
+		//creates new row
+		fmt.Print("█")
+		//columns
+		for x := 0; x < wl.width; x++ {
+			fmt.Print(getChar(wl.getCell(x, y)))
+		}
+		fmt.Println("█")
+	}
+}
+
 func (wl World) isInside(x, y int) bool {
 	return x >= 0 && x < wl.width && y >= 0 && y < wl.height
 }
@@ -80,4 +93,11 @@ func (wl World) findNeighbours(x, y int) (count int) {
 		}
 	}
 	return
+}
+
+func getChar(cell Cell) string {
+	if cell.Alive {
+		return "*"
+	}
+	return " "
 }
