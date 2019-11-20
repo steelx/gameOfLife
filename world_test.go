@@ -93,10 +93,10 @@ func TestWorld_setCell(t *testing.T) {
 func TestWorld_findNeighbours(t *testing.T) {
 	var wl *World = NewWorld(5, 5)
 	/*
-	X	_ 0 1 2 3
-	Y	0       D
-		1   A C
-		2   B   E
+		X	_ 0 1 2 3
+		Y	0       D
+			1   A C
+			2   B   E
 	*/
 	wl.setCell(1, 1, true) //A
 	wl.setCell(1, 2, true) //B
@@ -110,18 +110,6 @@ func TestWorld_findNeighbours(t *testing.T) {
 
 	if CNeighbours := wl.findNeighbours(2, 1); CNeighbours != 4 {
 		t.Error("Neighbours count should be 4 for given vector")
-	}
-}
-
-func TestGetChar(t *testing.T) {
-	char := getChar(true)
-	if char != "@" {
-		t.Error("Alive cell display character should be an @")
-	}
-
-	char = getChar(false)
-	if char != " " {
-		t.Error("Dead cell display character should be an empty space")
 	}
 }
 
