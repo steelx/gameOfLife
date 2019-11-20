@@ -53,7 +53,7 @@ func (wl *World) Next() {
 
 	for y := 0; y < oldWorld.height; y++ {
 		for x := 0; x < oldWorld.width; x++ {
-			cell := Cell{oldWorld.getCell(x, y)}
+			cell := NewCell(oldWorld.getCell(x, y))
 			count := oldWorld.findNeighbours(x, y)
 			cell.NextState(count)
 			wl.setCell(x, y, cell.Alive)

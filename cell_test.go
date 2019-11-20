@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestCell_NextState_withZeroNeighbours(t *testing.T) {
+func TestAliveCell_NextState_withZeroNeighbours(t *testing.T) {
 	cell := Cell{true}
 	cell.NextState(0)
 
@@ -11,7 +11,7 @@ func TestCell_NextState_withZeroNeighbours(t *testing.T) {
 	}
 }
 
-func TestCell_NextState_withTwoNeighbours(t *testing.T) {
+func TestAliveCell_NextState_withTwoNeighbours(t *testing.T) {
 	cell := Cell{true}
 	cell.NextState(2)
 
@@ -19,8 +19,16 @@ func TestCell_NextState_withTwoNeighbours(t *testing.T) {
 		t.Error(t, "Cell should stay alive")
 	}
 }
+func TestAliveCell_NextState_withThreeNeighbours(t *testing.T) {
+	cell := Cell{true}
+	cell.NextState(3)
 
-func TestCell_NextState_withFourNeighbours(t *testing.T) {
+	if !cell.Alive {
+		t.Error(t, "Cell should stay alive")
+	}
+}
+
+func TestAliveCell_NextState_withFourNeighbours(t *testing.T) {
 	cell := Cell{true}
 	cell.NextState(4)
 
@@ -29,11 +37,11 @@ func TestCell_NextState_withFourNeighbours(t *testing.T) {
 	}
 }
 
-func TestDeadCell_NextState_withTwoNeighbours(t *testing.T) {
+func TestDeadCell_NextState_withThreeNeighbours(t *testing.T) {
 	cell := Cell{false}
-	cell.NextState(2)
+	cell.NextState(3)
 
 	if !cell.Alive {
-		t.Error(t, "Cell should get alive with correct conditions")
+		t.Error(t, "Cell should get alive with 3 neighbours")
 	}
 }

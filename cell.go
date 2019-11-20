@@ -36,7 +36,7 @@ func (c *Cell) NextState(neighbours int) {
 		c.Alive = true
 	}
 
-	if !c.Alive && neighbours == 2 {
+	if !c.Alive && neighbours == 3 {
 		c.Alive = true
 	}
 }

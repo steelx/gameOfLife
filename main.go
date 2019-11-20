@@ -11,7 +11,7 @@ func main() {
 
 	//create world
 	var world = NewWorld(40, 10)
-	world.GenerateGrid(5)
+	world.GenerateGrid(30)
 
 	for {
 		clearTerminal()
