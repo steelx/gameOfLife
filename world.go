@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"image/color"
 	"math/rand"
 	"os"
 	"time"
@@ -62,15 +65,12 @@ func (wl *World) Next() {
 }
 
 //Print to screen
-func (wl World) Print() {
+func (wl World) Print(background *ebiten.Image) {
 	for y := 0; y < wl.height; y++ {
-		//creates new row
-		fmt.Print("█")
 		//columns
 		for x := 0; x < wl.width; x++ {
-			fmt.Print(getChar(wl.getCell(x, y)))
+			renderCharacter(x, y, wl.getCell(x, y), background)
 		}
-		fmt.Println("█")
 	}
 }
 
@@ -116,9 +116,8 @@ func (wl World) findNeighbours(x, y int) (count int) {
 	return
 }
 
-func getChar(isAlive bool) string {
+func renderCharacter(x, y int, isAlive bool, background *ebiten.Image) {
 	if isAlive {
-		return "@"
+		ebitenutil.DrawRect(background, float64(x), float64(y), 1, 1, color.White)
 	}
-	return " "
 }
