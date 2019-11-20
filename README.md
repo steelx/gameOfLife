@@ -6,3 +6,5 @@ Game of Life build with `Go` programming language
 
 
 ## PREVIEW
+
+[DEMO](https://terminalizer.com/view/ff0a1a842402)
