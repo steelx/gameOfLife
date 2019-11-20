@@ -10,13 +10,14 @@ import (
 func main() {
 
 	//create world
-	var world = NewWorld(50, 20)
-	world.generateMap(5)
+	var world = NewWorld(40, 10)
+	world.GenerateGrid(5)
 
 	for {
 		clearTerminal()
-		world.print()
-		time.Sleep(1 * time.Second)
+		world.Print()
+		world.Next()
+		time.Sleep(500 * time.Millisecond)
 	}
 }
 

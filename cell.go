@@ -9,9 +9,9 @@ var Directions = map[string]Vector{
 	"e":  {1, 0},
 	"se": {1, 1},
 	"s":  {0, 1},
-	"sw": {1, 1},
-	"w":  {1, 0},
-	"nw": {1, -1},
+	"sw": {-1, 1},
+	"w":  {-1, 0},
+	"nw": {-1, -1},
 }
 
 type Vector struct {
@@ -23,16 +23,16 @@ type Cell struct {
 	Alive bool
 }
 
-func NewCell(alive bool) *Cell {
-	return &Cell{alive}
+func NewCell(alive bool) Cell {
+	return Cell{alive}
 }
 
 func (c *Cell) NextState(neighbours int) {
-	if neighbours < 2 || neighbours > 3 || neighbours == 0 {
+	if c.Alive && (neighbours < 2 || neighbours > 3) {
 		c.Alive = false
 	}
 
-	if neighbours == 2 || neighbours == 3 {
+	if c.Alive && (neighbours == 2 || neighbours == 3) {
 		c.Alive = true
 	}
 

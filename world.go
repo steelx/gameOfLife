@@ -29,12 +29,12 @@ func NewWorld(width, height int) *World {
 	}
 }
 
-func (wl World) generateMap(percent int) {
+func (wl *World) GenerateGrid(percent int) {
 	percentageAlive := percent * len(wl.cells) / 100
 
 	// Fill Alive Cells as per percentage given
 	for i := percentageAlive; i > 0; i-- {
-		wl.cells[i] = Cell{true}
+		wl.cells[i] = NewCell(true)
 	}
 
 	// Randomize Alive Cells
@@ -47,8 +47,22 @@ func (wl World) generateMap(percent int) {
 	wl.cells = cellsClone
 }
 
+func (wl *World) Next() {
+	oldWorld := NewWorld(wl.width, wl.height)
+	copy(oldWorld.cells, wl.cells)
+
+	for y := 0; y < oldWorld.height; y++ {
+		for x := 0; x < oldWorld.width; x++ {
+			cell := Cell{oldWorld.getCell(x, y)}
+			count := oldWorld.findNeighbours(x, y)
+			cell.NextState(count)
+			wl.setCell(x, y, cell.Alive)
+		}
+	}
+}
+
 //Print to screen
-func (wl World) print() {
+func (wl World) Print() {
 	for y := 0; y < wl.height; y++ {
 		//creates new row
 		fmt.Print("█")
@@ -83,13 +97,13 @@ func (wl *World) setCell(x, y int, alive bool) {
 		os.Exit(1)
 	}
 
-	wl.cells[x+(y*wl.width)] = Cell{alive}
+	wl.cells[x+(y*wl.width)] = NewCell(alive)
 }
 
 // Plus accepts x, y of Cell PLUS direction vector
 // returns if Cell exists in the given direction
 func (wl World) Plus(x, y int, vec Vector) bool {
-	return wl.getCell(x+vec.x, y+vec.y)
+	return wl.isInside(x+vec.x, y+vec.y) && wl.getCell(x+vec.x, y+vec.y)
 }
 
 // findNeighbours of given co-ordinates
@@ -104,7 +118,7 @@ func (wl World) findNeighbours(x, y int) (count int) {
 
 func getChar(isAlive bool) string {
 	if isAlive {
-		return "*"
+		return "@"
 	}
 	return " "
 }

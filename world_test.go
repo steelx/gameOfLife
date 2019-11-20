@@ -36,7 +36,11 @@ func TestWorld_isInsideNot(t *testing.T) {
 
 func TestWorld_LookNotFound(t *testing.T) {
 	world := NewWorld(10, 10)
-	//x 0 and y 0 is not valid
+
+	if found := world.Look(0, 0, Directions["n"]); found {
+		t.Error(t, "No Cell should be found, since direction North out of range")
+	}
+
 	if found := world.Look(1, 1, Directions["n"]); found {
 		t.Error(t, "No Cell should be found, since direction North out of range")
 	}
@@ -66,11 +70,14 @@ func TestWorld_LookNotFound(t *testing.T) {
 func TestWorld_Plus(t *testing.T) {
 	var wl *World = NewWorld(5, 5)
 	wl.setCell(1, 1, true)
-	wl.setCell(2, 1, true)
-	rightCell := wl.Plus(1, 1, Directions["e"])
+	wl.setCell(2, 1, true) //eastCell
 
-	if isAlive := wl.getCell(2, 1); isAlive != rightCell {
-		t.Error(t, "Cell should be found Alive")
+	if alive := wl.Plus(1, 1, Directions["e"]); !alive {
+		t.Error(t, "Cell on East should be found Alive")
+	}
+
+	if alive := wl.Plus(1, 1, Directions["s"]); alive {
+		t.Error(t, "Cell on South direction should be found Dead")
 	}
 }
 
@@ -85,23 +92,63 @@ func TestWorld_setCell(t *testing.T) {
 
 func TestWorld_findNeighbours(t *testing.T) {
 	var wl *World = NewWorld(5, 5)
-	wl.setCell(1, 1, true)
-	wl.setCell(1, 2, true)
-	wl.setCell(2, 1, true)
+	/*
+	X	_ 0 1 2 3
+	Y	0       D
+		1   A C
+		2   B   E
+	*/
+	wl.setCell(1, 1, true) //A
+	wl.setCell(1, 2, true) //B
+	wl.setCell(2, 1, true) //C
+	wl.setCell(3, 0, true) //D
+	wl.setCell(3, 2, true) //E
 
-	if count := wl.findNeighbours(1, 1); count != 2 {
+	if ANeighbours := wl.findNeighbours(1, 1); ANeighbours != 2 {
 		t.Error("Neighbours count should be 2 for given vector")
+	}
+
+	if CNeighbours := wl.findNeighbours(2, 1); CNeighbours != 4 {
+		t.Error("Neighbours count should be 4 for given vector")
 	}
 }
 
 func TestGetChar(t *testing.T) {
 	char := getChar(true)
-	if char != "*" {
-		t.Error("Alive cell display character should be an astrix *")
+	if char != "@" {
+		t.Error("Alive cell display character should be an @")
 	}
 
 	char = getChar(false)
 	if char != " " {
 		t.Error("Dead cell display character should be an empty space")
+	}
+}
+
+func TestWorld_GenerateGrid(t *testing.T) {
+	var wl *World = NewWorld(5, 5)
+	wl.GenerateGrid(40)
+
+	if total := len(wl.cells); total != 25 {
+		t.Error("Total cells count should be 25")
+	}
+
+	aliveCount := 0
+	for _, cell := range wl.cells {
+		if cell.Alive {
+			aliveCount++
+		}
+	}
+	if aliveCount != 10 {
+		t.Error("Alive cells count should be 40 percent")
+	}
+}
+
+func TestWorld_Next(t *testing.T) {
+	var wl *World = NewWorld(5, 5)
+	wl.GenerateGrid(40)
+
+	if total := len(wl.cells); total != 25 {
+		t.Error("Total cells count should be 25")
 	}
 }
