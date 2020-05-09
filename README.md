@@ -1,5 +1,5 @@
 # gameOfLife
-Game of Life build with `Go` programming language
+Game of Life made with `Go` programming language
 
 ## DEMO
 
